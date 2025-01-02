@@ -544,7 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3fdd5d0e1c54c8aae905e7edde8691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teleportSpeed: 1
+  teleportSpeed: 0.2
   teleportRayLength: 20
   teleportRay: {fileID: 467153019}
   validTeleportRayColor: {r: 0.45027757, g: 1, b: 0.4481132, a: 1}

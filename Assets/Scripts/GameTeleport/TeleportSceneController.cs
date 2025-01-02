@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TeleportSceneController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class TeleportSceneController : MonoBehaviour
     private bool isIntendToTeleport = false;
     private bool isAbleToTeleport = false;
     private bool isTeleporting = false;
+    private Vector3 raycastDestination;
     private Vector3 teleportDestination;
     
     public void Initialize(GameManager gameManager)
@@ -47,12 +49,13 @@ public class TeleportSceneController : MonoBehaviour
             isAbleToTeleport = CheckTeleportationFeasibility();
             if (isAbleToTeleport && rightController.IsTriggerPressed())
             {
-                // isTeleporting = true;
-                
+                isTeleporting = true;
             }
         }
         
         UpdateTeleportRayVisual();
+        
+        if (isTeleporting) SmoothlyTeleport();
     }
 
     private bool CheckTeleportationFeasibility()
@@ -63,7 +66,9 @@ public class TeleportSceneController : MonoBehaviour
         {
             if (hit.collider.TryGetComponent(out TeleportSurface teleportSurface))
             {
-                teleportDestination = hit.point;
+                raycastDestination = hit.point;
+                teleportDestination = raycastDestination;
+                teleportDestination.y = inputProvider.GetHeadTransform().position.y;
                 return true;
             }
         }
@@ -77,7 +82,7 @@ public class TeleportSceneController : MonoBehaviour
             if (isAbleToTeleport)
             {
                 DrawTeleportRay(true, rightController.GetTransform().position, 
-                    teleportDestination, validTeleportRayColor);
+                    raycastDestination, validTeleportRayColor);
             }
             else
             {
@@ -104,6 +109,11 @@ public class TeleportSceneController : MonoBehaviour
 
     private void SmoothlyTeleport()
     {
-        throw new NotImplementedException();
+        inputProvider.GetHeadTransform().position = Vector3.MoveTowards(inputProvider.GetHeadTransform().position,
+            teleportDestination, teleportSpeed + Time.deltaTime);
+        if (Vector3.Distance(inputProvider.GetHeadTransform().position, teleportDestination) < 1f)
+        {
+            isTeleporting = false;
+        }
     }
 }
