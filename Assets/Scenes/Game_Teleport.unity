@@ -545,8 +545,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teleportSpeed: 1
-  teleportRayLength: 10
+  teleportRayLength: 20
   teleportRay: {fileID: 467153019}
+  validTeleportRayColor: {r: 0.45027757, g: 1, b: 0.4481132, a: 1}
+  invalidTeleportRayColor: {r: 1, g: 0.67258, b: 0.25, a: 1}
 --- !u!1 &1328620316
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,8 @@ public class TeleportSceneController : MonoBehaviour
     [SerializeField] private float teleportSpeed = 2f;
     [SerializeField] private float teleportRayLength = 10f;
     [SerializeField] private LineRenderer teleportRay;
+    [SerializeField] private Color validTeleportRayColor = Color.green;
+    [SerializeField] private Color invalidTeleportRayColor = Color.red;
     
     private GameManager gameManager;
     private IInputProvider inputProvider;
@@ -13,7 +15,7 @@ public class TeleportSceneController : MonoBehaviour
     private IControllerInput rightController;
 
     private bool isIntendToTeleport = false;
-    private bool canTeleport = false;
+    private bool isAbleToTeleport = false;
     private bool isTeleporting = false;
     private Vector3 teleportDestination;
     
@@ -37,62 +39,71 @@ public class TeleportSceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // intend to teleport when moving right controller's joystick forward
-        if (rightController.Joystick.y > 0.5f)
-        {
-            isIntendToTeleport = true;
-        }
-        else
-        {
-            isIntendToTeleport = false;
-        }
+        if (rightController.Joystick.y > 0.5f) isIntendToTeleport = true;
+        else isIntendToTeleport = false;
 
-        if (isIntendToTeleport)
+        if (isIntendToTeleport && !isTeleporting)
         {
-            if (CanTeleport())
+            isAbleToTeleport = CheckTeleportationFeasibility();
+            if (isAbleToTeleport && rightController.IsTriggerPressed())
             {
-                VisualizeTeleportRay(true, rightController.GetTransform().position, 
-                    teleportDestination, Color.green);
-                if (rightController.IsTriggerPressed())
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            else
-            {
-                VisualizeTeleportRay(true, rightController.GetTransform().position,
-                    rightController.GetTransform().position +
-                    rightController.GetTransform().forward * teleportRayLength, Color.red);
+                // isTeleporting = true;
+                
             }
         }
-        else
-        {
-            VisualizeTeleportRay(false, Vector3.zero, Vector3.zero, Color.red);
-        }
+        
+        UpdateTeleportRayVisual();
     }
 
-    private bool CanTeleport()
+    private bool CheckTeleportationFeasibility()
     {
         if (Physics.Raycast(rightController.GetTransform().position, 
                 rightController.GetTransform().forward,
                 out RaycastHit hit, teleportRayLength))
         {
-            if (hit.collider.GetComponent<TeleportSurface>())
+            if (hit.collider.TryGetComponent(out TeleportSurface teleportSurface))
             {
                 teleportDestination = hit.point;
                 return true;
             }
         }
-
         return false;
     }
 
-    private void VisualizeTeleportRay(bool isVisible, Vector3 startPosition, Vector3 endPosition, Color color)
+    private void UpdateTeleportRayVisual()
+    {
+        if (isIntendToTeleport && !isTeleporting)
+        {
+            if (isAbleToTeleport)
+            {
+                DrawTeleportRay(true, rightController.GetTransform().position, 
+                    teleportDestination, validTeleportRayColor);
+            }
+            else
+            {
+                DrawTeleportRay(true, rightController.GetTransform().position,
+                    rightController.GetTransform().position +
+                    rightController.GetTransform().forward * teleportRayLength, 
+                    invalidTeleportRayColor);
+            }
+        }
+        else 
+        {
+            DrawTeleportRay(false, Vector3.zero, Vector3.zero, invalidTeleportRayColor);
+        }
+    }
+    
+    private void DrawTeleportRay(bool isVisible, Vector3 startPosition, Vector3 endPosition, Color color)
     {
         teleportRay.enabled = isVisible;
         teleportRay.SetPosition(0, startPosition);
         teleportRay.SetPosition(1, endPosition);
         teleportRay.startColor = color;
         teleportRay.endColor = color;
+    }
+
+    private void SmoothlyTeleport()
+    {
+        throw new NotImplementedException();
     }
 }
