@@ -49,7 +49,11 @@ public class GameManager : MonoBehaviour
 
     public void GoToTeleportScene()
     {
-        throw new NotImplementedException();
+        StartCoroutine(LoadScene("Game_Teleport", () =>
+        {
+            var sceneController = GameObject.FindAnyObjectByType<TeleportSceneController>();
+            sceneController.Initialize(this);
+        }));
     }
 
     public void GoToMenuScene()

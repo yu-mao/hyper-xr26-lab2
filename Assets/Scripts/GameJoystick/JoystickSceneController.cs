@@ -21,6 +21,14 @@ public class JoystickSceneController : MonoBehaviour
         leftController = inputProvider.GetLeftController();
         rightController = inputProvider.GetRightController();
     }
+    
+    private void Start()
+    {
+        if (gameManager == null)
+        {
+            Initialize(GameManager.BootstrapFromEditor());
+        }
+    }
 
     private void Update()
     {
