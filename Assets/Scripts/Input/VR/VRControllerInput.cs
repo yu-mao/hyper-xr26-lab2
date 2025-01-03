@@ -25,6 +25,11 @@ public class VRControllerInput : MonoBehaviour, IControllerInput
 
     public bool IsTriggerPressed()
     {
-        return OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, controllerType);
+        return OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, controllerType);
+    }
+
+    public bool IsTriggerReleased()
+    {
+        return OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, controllerType);
     }
 }

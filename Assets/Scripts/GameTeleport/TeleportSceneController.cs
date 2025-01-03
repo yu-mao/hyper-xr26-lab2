@@ -25,6 +25,7 @@ public class TeleportSceneController : MonoBehaviour
     {
         this.gameManager = gameManager;
         inputProvider = gameManager.InputProvider;
+        leftController = inputProvider.GetLeftController();
         rightController = inputProvider.GetRightController();
         teleportRay.enabled = false;
         teleportRay.positionCount = 2;
@@ -41,6 +42,11 @@ public class TeleportSceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (leftController.IsButtonPressed(ControllerButtonId.Two))
+        {
+            gameManager.GoToMenuScene();
+        }
+        
         if (rightController.Joystick.y > 0.5f) isIntendToTeleport = true;
         else isIntendToTeleport = false;
 
@@ -109,7 +115,7 @@ public class TeleportSceneController : MonoBehaviour
 
     private void SmoothlyTeleport()
     {
-        inputProvider.GetHeadTransform().position = Vector3.MoveTowards(inputProvider.GetHeadTransform().position,
+        inputProvider.GetRigTransform().position = Vector3.MoveTowards(inputProvider.GetHeadTransform().position,
             teleportDestination, teleportSpeed + Time.deltaTime);
         if (Vector3.Distance(inputProvider.GetHeadTransform().position, teleportDestination) < 1f)
         {

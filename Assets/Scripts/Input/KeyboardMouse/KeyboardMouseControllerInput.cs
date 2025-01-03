@@ -32,11 +32,23 @@ public class KeyboardMouseControllerInput : MonoBehaviour, IControllerInput
     {
         if (isLeftController)
         {
-            return Mouse.current.leftButton.isPressed;
+            return Mouse.current.leftButton.wasPressedThisFrame;
         }
         else
         {
-            return Mouse.current.rightButton.isPressed;
+            return Mouse.current.rightButton.wasPressedThisFrame;
+        }
+    }
+
+    public bool IsTriggerReleased()
+    {
+        if (isLeftController)
+        {
+            return Mouse.current.leftButton.wasReleasedThisFrame;
+        }
+        else
+        {
+            return Mouse.current.rightButton.wasReleasedThisFrame;
         }
     }
 

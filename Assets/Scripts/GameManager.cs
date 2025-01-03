@@ -44,7 +44,11 @@ public class GameManager : MonoBehaviour
 
     public void GoToClimbingScene()
     {
-        throw new NotImplementedException();
+        StartCoroutine(LoadScene("Game_Climbing", () =>
+        {
+            var sceneController = GameObject.FindAnyObjectByType<ClimbingSceneController>();
+            sceneController.Initialize(this);
+        }));
     }
 
     public void GoToTeleportScene()
